@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel Package Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: block;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .checkbox-group label {
+            display: inline-block;
+            margin-right: 10px;
+            font-weight: normal;
+        }
+        .total-cost {
+            font-size: 20px;
+            font-weight: bold;
+            color: #007bff;
+            margin: 15px 0;
+            text-align: center;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            color: #fff;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        @media (max-width: 768px) {
+            input, select {
+                padding: 6px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Travel Package Booking Form</h2>
+        <form id="travelForm">
+            <!-- Personal Information -->
+            <label for="name">Name:</label>
+            <input type="text" id="name" required>
+
+            <label for="contact">Contact Number:</label>
+            <input type="tel" id="contact" required>
+
+            <label for="email">Email ID:</label>
+            <input type="email" id="email" required>
+
+            <!-- Dates -->
+            <label for="arrival">Arrival Date:</label>
+            <input type="date" id="arrival" required>
+
+            <label for="return">Return Date:</label>
+            <input type="date" id="return" required>
+
+            <!-- Number of Pax -->
+            <label for="pax">Number of Pax:</label>
+            <input type="number" id="pax" min="1" required>
+
+            <!-- Hotel Type -->
+            <label for="hotelType">Hotel Type:</label>
+            <select id="hotelType">
+                <option value="5">3 Star Hotel - $5</option>
+                <option value="15">4 Star Hotel - $15</option>
+                <option value="20">5 Star Hotel - $20</option>
+            </select>
+
+            <!-- Car Type -->
+            <label for="carType">Car Type:</label>
+            <select id="carType">
+                <option value="5">4 Seater - $5</option>
+                <option value="6">6 Seater - $6</option>
+                <option value="7">8 Seater - $7</option>
+                <option value="8">10 Seater - $8</option>
+                <option value="9">12 Seater - $9</option>
+                <option value="10">15 & more Seater - $10</option>
+            </select>
+
+            <!-- Side Scenes -->
+            <label>Side Scenes ($5 each):</label>
+            <div class="checkbox-group">
+                <label><input type="checkbox" value="5"> Side Scene 1</label>
+                <label><input type="checkbox" value="5"> Side Scene 2</label>
+                <label><input type="checkbox" value="5"> Side Scene 3</label>
+                <label><input type="checkbox" value="5"> Side Scene 4</label>
+                <label><input type="checkbox" value="5"> Side Scene 5</label>
+            </div>
+
+            <!-- Total Cost Display -->
+            <div class="total-cost" id="totalCost">Total Package Cost: $0</div>
+
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+
+    <script>
+        const form = document.getElementById('travelForm');
+        const totalCostDisplay = document.getElementById('totalCost');
+
+        // Event listeners for calculating total cost dynamically
+        form.addEventListener('input', calculateTotalCost);
+
+        function calculateTotalCost() {
+            const hotelRate = parseInt(document.getElementById('hotelType').value);
+            const carRate = parseInt(document.getElementById('carType').value);
+            const pax = parseInt(document.getElementById('pax').value) || 0;
+
+            const arrivalDate = new Date(document.getElementById('arrival').value);
+            const returnDate = new Date(document.getElementById('return').value);
+
+            const sideScenes = document.querySelectorAll('input[type="checkbox"]:checked');
+            const sideSceneRate = sideScenes.length * 5;
+
+            if (isNaN(arrivalDate) || isNaN(returnDate) || pax === 0) {
+                totalCostDisplay.textContent = "Total Package Cost: $0";
+                return;
+            }
+
+            const days = Math.max((returnDate - arrivalDate) / (1000 * 60 * 60 * 24), 1);
+
+            const hotelCost = hotelRate * pax * days;
+            const carCost = carRate * days;
+            const sideSceneCost = sideSceneRate * days;
+            const paxCost = pax * 8 * days;
+
+            const totalCost = hotelCost + carCost + sideSceneCost + paxCost;
+
+            totalCostDisplay.textContent = `Total Package Cost: $${totalCost}`;
+        }
+    </script>
+</body>
+</html>
